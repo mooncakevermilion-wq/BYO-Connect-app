@@ -52,7 +52,7 @@ EcoCash: <b id="ecoNumber" style="color:var(--gold);font-size:1.3rem">0789706161
 </div></div>
 
 <div id="adminBox" class="hidden"><div class="glass" style="width:100%;max-width:500px">
-<h2>Admin Panel PRO</h2>
+<h2>Admin Panel </h2>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
 <div class="admin-card">Total Posts: <b id="statPosts">0</b></div>
 <div class="admin-card">Earnings: $<b id="statCash">0</b></div>
@@ -70,8 +70,8 @@ EcoCash: <b id="ecoNumber" style="color:var(--gold);font-size:1.3rem">0789706161
 </div></div>
 
 <div class="header">
-<div class="logo">BYO <span>Connect</span> </div>
-<div class="search"><input id="searchInput" placeholder="Search..." oninput="render()"><select id="locFilter" onchange="render()" style="width:110px"><option value="">All Areas</option><option>Luveve</option><option>Nkulumane</option><option>Pumula</option><option>CBD</option><option>Emganwini</option><option>Cowdray</option><option>Entumbane</option></select></div>
+<div class="logo">BYO <span>Connect</div>
+<div class="search"><input id="searchInput" placeholder="Search..." oninput="render()"><select id="locFilter" onchange="render()" style="width:110px"><option value="">All Areas</option><option>Luveve</option><option>Nkulumane</option><option>Pumula</option><option>CBD</option><option>Emganwini</option><option>Cowdray</option><option>Sizinda</option></select></div>
 <div><span id="userEmail" style="font-size:.6rem;color:#888">Guest</span> <button onclick="logout()" class="btn-sm" style="background:#222;color:#fff;border:0;border-radius:6px">Logout</button></div>
 </div>
 
@@ -92,7 +92,7 @@ EcoCash: <b id="ecoNumber" style="color:var(--gold);font-size:1.3rem">0789706161
 <div id="addBox" class="glass hidden">
 <h4>New Ad</h4>
 <select id="type"><option value="house">House</option><option value="car">Car</option><option value="market">Product</option><option value="people">Service</option></select>
-<select id="location"><option value="">Select Area</option><option>Luveve</option><option>Nkulumane</option><option>Pumula</option><option>CBD</option><option>Emganwini</option><option>Cowdray</option><option>Entumbane</option></select>
+<select id="location"><option value="">Select Area</option><option>Luveve</option><option>Nkulumane</option><option>Pumula</option><option>CBD</option><option>Emganwini</option><option>Cowdray</option><option>Sizinda</option></select>
 <input id="title" placeholder="Title e.g 2 Room Luveve"><input id="price" placeholder="Price e.g $200 / $12000"><input id="phone" placeholder="WhatsApp 077..."><textarea id="desc" placeholder="Details, exact location"></textarea>
 <input id="pic" type="file" accept="image/*"><img id="preview" style="width:100%;border-radius:10px;margin-top:6px;display:none">
 <button class="btn btn-main" onclick="askPay()">Continue to Pay</button>
@@ -172,4 +172,4 @@ function createSiteAd(){ db.collection('site_ads').add({title:adTitle.value,img:
 loadAll();
 </script>
 </body>
-  </html>
+</html>
