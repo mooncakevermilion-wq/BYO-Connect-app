@@ -4,111 +4,172 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BYO Connect - Bulawayo Marketplace</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#00f2ea">
 <style>
-:root{--cyan:#00f2ea;--purple:#b026ff;--gold:#ffd700}
+:root{--cyan:#00f2ea;--purple:#b026ff;--gold:#ffd700;--green:#25D366}
 *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
 body{background:#0a0a0f;color:#fff}
-.header{padding:12px 15px;background:#000;position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222}
-.logo{font-weight:900;font-size:1.2rem} .logo span{color:var(--cyan)}
-.tabs{display:flex;gap:5px;overflow:auto;padding:10px;background:#111}
-.tab{padding:8px 14px;border-radius:20px;background:#222;border:1px solid #333;white-space:nowrap;cursor:pointer;font-size:.8rem}
+.header{padding:10px 12px;background:#000;position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;gap:8px;flex-wrap:wrap}
+.logo{font-weight:900;font-size:1.3rem} .logo span{color:var(--cyan)}
+.search{flex:1;min-width:140px;display:flex;gap:5px}
+.search input{flex:1}
+.tabs{display:flex;gap:5px;overflow:auto;padding:8px;background:#111;position:sticky;top:52px;z-index:98}
+.tab{padding:7px 13px;border-radius:20px;background:#222;border:1px solid #333;white-space:nowrap;cursor:pointer;font-size:.8rem}
 .tab.active{background:var(--cyan);color:#000;font-weight:bold}
-.glass{background:#15151d;border:1px solid #222;border-radius:15px;padding:15px;margin:10px}
-input,select,textarea{width:100%;padding:11px;margin:5px 0;background:#000;border:1px solid #333;border-radius:10px;color:#fff}
-.btn{width:100%;padding:12px;border:0;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:8px}
-.btn-main{background:linear-gradient(90deg,var(--purple),var(--cyan));color:#fff}
-.btn-eco{background:#1a9c2c;color:#fff}
-.hidden{display:none !important}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px} @media(max-width:600px){.grid{grid-template-columns:1fr}}
-img.list-img{width:100%;height:160px;object-fit:cover;border-radius:10px}
-#authBox,#payBox,#adminBox{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:1000;display:flex;justify-content:center;align-items:center;padding:20px;overflow:auto}
+.glass{background:#15151d;border:1px solid #222;border-radius:14px;padding:12px;margin:8px}
+input,select,textarea{width:100%;padding:11px;margin:4px 0;background:#000;border:1px solid #333;border-radius:10px;color:#fff}
+.btn{padding:10px 14px;border:0;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:6px}
+.btn-main{background:linear-gradient(90deg,var(--purple),var(--cyan));color:#fff;width:100%}
+.btn-eco{background:var(--green);color:#fff;width:100%}
+.btn-sm{padding:6px 10px;font-size:.75rem;width:auto}
+.hidden{display:none!important}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px} @media(max-width:600px){.grid{grid-template-columns:1fr 1fr}}
+.list-img{width:100%;height:140px;object-fit:cover;border-radius:10px}
+.badge{font-size:.65rem;padding:3px 7px;border-radius:10px;background:var(--gold);color:#000;font-weight:bold}
+.verified{color:var(--cyan);font-size:.75rem}
+.site-ad{background:linear-gradient(90deg,#ff6b00,#ffd700);color:#000;padding:12px;margin:8px;border-radius:12px;text-align:center;font-weight:bold;display:flex;justify-content:space-between;align-items:center}
+#adminBox,#authBox,#payBox{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.97);z-index:1000;display:flex;justify-content:center;align-items:start;padding:15px;overflow:auto}
+.admin-card{background:#111;border:1px solid #333;padding:10px;border-radius:10px;margin:6px 0;font-size:.8rem}
 </style>
 </head>
 <body>
 
-<div id="authBox" class="hidden"><div class="glass" style="width:100%;max-width:360px">
-<h2 style="text-align:center">BYO <span style="color:var(--cyan)">Connect</span></h2>
-<input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password">
+<div id="authBox" class="hidden"><div class="glass" style="width:100%;max-width:360px;margin-top:40px">
+<h2 style="text-align:center">BYO <span style="color:var(--cyan)">Connect </span></h2>
+<input id="email" placeholder="Email"><input id="pass" type="password" placeholder="Password">
 <button class="btn btn-main" onclick="register()">Create Account</button>
-<button class="btn" style="background:#222" onclick="login()">Login</button>
-<p id="authMsg" style="text-align:center;color:var(--gold);font-size:.8rem;margin-top:10px"></p>
-<button onclick="authBox.classList.add('hidden')" style="background:none;border:0;color:#666;width:100%;margin-top:10px">Close</button>
+<button class="btn" style="background:#222;width:100%" onclick="login()">Login</button>
+<p id="authMsg" style="color:var(--gold);text-align:center;font-size:.8rem"></p>
+<button onclick="authBox.classList.add('hidden')" style="background:none;border:0;color:#666;width:100%;margin-top:8px">Close</button>
 </div></div>
 
-<div id="payBox" class="hidden"><div class="glass" style="width:100%;max-width:380px">
-<h3 style="color:var(--gold)">Pay to Post</h3>
-<p id="payInfo">Upload fee: $1 USD</p>
-<div style="background:#000;padding:12px;border-radius:10px;border:1px dashed var(--gold);margin:10px 0">
-<p style="font-size:.8rem">EcoCash to:</p><b id="ecoNumber" style="font-size:1.2rem;color:var(--gold)">0789706161</b>
+<div id="payBox" class="hidden"><div class="glass" style="width:100%;max-width:380px;margin-top:30px">
+<h3 style="color:var(--gold)">Pay $1 to Post</h3>
+<div style="background:#000;padding:10px;border-radius:10px;border:1px dashed var(--gold);margin:8px 0;text-align:center">
+EcoCash: <b id="ecoNumber" style="color:var(--gold);font-size:1.3rem">0789706161</b></div>
+<input id="ecoCode" placeholder="EcoCash Code PP..."><input id="ecoPhone" placeholder="Your EcoCash Number">
+<button class="btn btn-eco" onclick="confirmPay()">Confirm & Post Ad</button>
+<button class="btn" style="background:#222;width:100%" onclick="payBox.classList.add('hidden')">Cancel</button>
+</div></div>
+
+<div id="adminBox" class="hidden"><div class="glass" style="width:100%;max-width:500px">
+<h2>Admin Panel PRO</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0">
+<div class="admin-card">Total Posts: <b id="statPosts">0</b></div>
+<div class="admin-card">Earnings: $<b id="statCash">0</b></div>
 </div>
-<input id="ecoCode" placeholder="EcoCash Code e.g PP210...">
-<input id="ecoPhoneUsed" placeholder="Your EcoCash number">
-<button class="btn btn-eco" onclick="confirmPay()">Confirm Payment & Post</button>
-<button class="btn" style="background:#222" onclick="payBox.classList.add('hidden')">Cancel</button>
+<h4>Settings</h4>
+<input id="adminEco" placeholder="EcoCash Number"><input id="adminFee" placeholder="Fee e.g 1">
+<button class="btn btn-main" onclick="saveSettings()">Save Settings</button>
+<h4 style="margin-top:15px">Create SITE AD (Banner)</h4>
+<p style="font-size:.7rem;color:#888">This ad shows at top for all users - charge businesses $5</p>
+<input id="adTitle" placeholder="Ad Title - e.g Dr Ncube Transport"><input id="adImg" placeholder="Image URL"><input id="adLink" placeholder="WhatsApp Link or URL">
+<button class="btn" style="background:var(--gold);color:#000;width:100%" onclick="createSiteAd()">Create Banner Ad</button>
+<h4 style="margin-top:15px">Pending Approval</h4><div id="pendingList"></div>
+<h4 style="margin-top:15px">Recent Payments</h4><div id="payList" style="max-height:150px;overflow:auto"></div>
+<button class="btn" style="background:#222;width:100%;margin-top:15px" onclick="adminBox.classList.add('hidden')">Close Admin</button>
 </div></div>
 
-<div id="adminBox" class="hidden"><div class="glass" style="width:100%;max-width:400px">
-<h3>Admin Panel</h3><p style="font-size:.7rem;color:#888">?admin=byo2026</p>
-<input id="adminEcoNum" placeholder="EcoCash Number"><input id="adminFee" placeholder="Fee">
-<button class="btn btn-main" onclick="saveSettings()">Save</button>
-<button class="btn" style="background:#222" onclick="adminBox.classList.add('hidden')">Close</button>
-<div id="adminPayments" style="max-height:200px;overflow:auto;font-size:.75rem;margin-top:10px"></div>
-</div></div>
+<div class="header">
+<div class="logo">BYO <span>Connect</span> PRO</div>
+<div class="search"><input id="searchInput" placeholder="Search..." oninput="render()"><select id="locFilter" onchange="render()" style="width:110px"><option value="">All Areas</option><option>Luveve</option><option>Nkulumane</option><option>Pumula</option><option>CBD</option><option>Emganwini</option><option>Cowdray</option><option>Entumbane</option></select></div>
+<div><span id="userEmail" style="font-size:.6rem;color:#888">Guest</span> <button onclick="logout()" class="btn-sm" style="background:#222;color:#fff;border:0;border-radius:6px">Logout</button></div>
+</div>
 
-<div class="header"><div class="logo">BYO <span>Connect</span></div><div><span id="userEmail" style="font-size:.6rem;color:#aaa">Guest</span> <button onclick="logout()" style="background:#222;color:#fff;border:0;padding:4px 8px;border-radius:8px">Logout</button></div></div>
 <div class="tabs">
 <div class="tab active" onclick="switchTab('all',this)">All</div>
 <div class="tab" onclick="switchTab('house',this)">Houses</div>
 <div class="tab" onclick="switchTab('car',this)">Cars</div>
 <div class="tab" onclick="switchTab('market',this)">Market</div>
 <div class="tab" onclick="switchTab('people',this)">People</div>
+<div class="tab" onclick="switchTab('my',this)">My Ads</div>
+<div class="tab" id="adminTab" style="display:none;background:var(--gold);color:#000" onclick="adminBox.classList.remove('hidden')">ADMIN</div>
 </div>
-<div style="padding:10px"><button onclick="if(checkAuth())addBox.classList.remove('hidden')" class="btn btn-main">Post Ad - <span id="feeDisplay">$1</span></button></div>
+
+<div id="siteAds"></div>
+
+<div style="padding:8px"><button onclick="if(checkAuth())addBox.classList.remove('hidden')" class="btn btn-main">+ Post New Ad - <span id="feeDisplay">$1</span> <span class="verified">✓ Verified</span></button></div>
+
 <div id="addBox" class="glass hidden">
+<h4>New Ad</h4>
 <select id="type"><option value="house">House</option><option value="car">Car</option><option value="market">Product</option><option value="people">Service</option></select>
-<input id="title" placeholder="Title"><input id="price" placeholder="Price"><input id="phone" placeholder="WhatsApp 077..."><textarea id="desc" placeholder="Location, details"></textarea>
-<input id="pic" type="file" accept="image/*"><img id="preview" style="width:100%;border-radius:10px;margin-top:10px;display:none">
+<select id="location"><option value="">Select Area</option><option>Luveve</option><option>Nkulumane</option><option>Pumula</option><option>CBD</option><option>Emganwini</option><option>Cowdray</option><option>Entumbane</option></select>
+<input id="title" placeholder="Title e.g 2 Room Luveve"><input id="price" placeholder="Price e.g $200 / $12000"><input id="phone" placeholder="WhatsApp 077..."><textarea id="desc" placeholder="Details, exact location"></textarea>
+<input id="pic" type="file" accept="image/*"><img id="preview" style="width:100%;border-radius:10px;margin-top:6px;display:none">
 <button class="btn btn-main" onclick="askPay()">Continue to Pay</button>
-<button class="btn" style="background:#222" onclick="addBox.classList.add('hidden')">Cancel</button>
+<button class="btn" style="background:#222;width:100%" onclick="addBox.classList.add('hidden')">Cancel</button>
 </div>
+
 <div id="list"></div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <script>
-const firebaseConfig={
-apiKey:"AIzaSyC2tx1SQnEpwVDMMSK5cewIV2hCWxDPyIg",
-authDomain:"byo-connect-app.firebaseapp.com",
-projectId:"byo-connect-app",
-storageBucket:"byo-connect-app.firebasestorage.app",
-messagingSenderId:"967684674524",
-appId:"1:967684674524:web:3a1daab4680071c770b519"
+const firebaseConfig = {
+  apiKey: "AIzaSyC-your-real-key-here",
+  authDomain: "byo-connect-app.firebaseapp.com",
+  projectId: "byo-connect-app",
+  storageBucket: "byo-connect-app.firebasestorage.app",
+  messagingSenderId: "967684674524",
+  appId: "1:967684674524:web:3a1daab4680071c770b519"
 };
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
-let currentUser=null, imgData='', curTab='all', settings={fee:'1',ecoNum:'0789706161'};
-window.allPosts=[];
-document.getElementById('pic').addEventListener('change', e=>{ let r=new FileReader(); r.onload=()=>{ imgData=r.result; document.getElementById('preview').src=imgData; document.getElementById('preview').style.display='block'; }; r.readAsDataURL(e.target.files[0]); });
-auth.onAuthStateChanged(u=>{ currentUser=u; document.getElementById('userEmail').innerText=u?u.email:'Guest'; if(u) loadPosts(); });
-if(window.location.search.includes('admin=byo2026')) setTimeout(()=>document.getElementById('adminBox').classList.remove('hidden'),500);
-function loadSettings(){ db.collection('byo_settings').doc('main').onSnapshot(d=>{ if(d.exists){ settings=d.data(); document.getElementById('feeDisplay').innerText=settings.fee; document.getElementById('ecoNumber').innerText=settings.ecoNum; } }); db.collection('byo_payments').orderBy('date','desc').limit(10).onSnapshot(s=>{ let h=''; s.forEach(d=>{let p=d.data(); h+=`<div>${p.email} - ${p.code}</div>`}); document.getElementById('adminPayments').innerHTML=h; });}
-function saveSettings(){ db.collection('byo_settings').doc('main').set({fee:document.getElementById('adminFee').value,ecoNum:document.getElementById('adminEcoNum').value}); alert('Saved');}
-function checkAuth(){ if(!currentUser){ document.getElementById('authBox').classList.remove('hidden'); return false; } return true; }
-function register(){ auth.createUserWithEmailAndPassword(document.getElementById('email').value,document.getElementById('password').value).then(()=>document.getElementById('authBox').classList.add('hidden')).catch(e=>document.getElementById('authMsg').innerText=e.message); }
-function login(){ auth.signInWithEmailAndPassword(document.getElementById('email').value,document.getElementById('password').value).then(()=>document.getElementById('authBox').classList.add('hidden')).catch(e=>document.getElementById('authMsg').innerText=e.message); }
+let currentUser=null, imgData='', curTab='all', settings={fee:'1',ecoNum:'0789706161'}, allPosts=[], siteAdsData=[], isAdmin=false;
+
+if(window.location.search.includes('admin=byo2026')){isAdmin=true; document.getElementById('adminTab').style.display='block'; setTimeout(()=>adminBox.classList.remove('hidden'),600);}
+
+document.getElementById('pic').addEventListener('change', e=>{ let r=new FileReader(); r.onload=()=>{ imgData=r.result; preview.src=imgData; preview.style.display='block'; }; r.readAsDataURL(e.target.files[0]); });
+auth.onAuthStateChanged(u=>{ currentUser=u; userEmail.innerText=u?u.email:'Guest'; if(u) loadAll(); });
+
+function checkAuth(){ if(!currentUser){ authBox.classList.remove('hidden'); return false;} return true; }
+function register(){ auth.createUserWithEmailAndPassword(email.value,pass.value).then(()=>authBox.classList.add('hidden')).catch(e=>authMsg.innerText=e.message); }
+function login(){ auth.signInWithEmailAndPassword(email.value,pass.value).then(()=>authBox.classList.add('hidden')).catch(e=>authMsg.innerText=e.message); }
 function logout(){ auth.signOut(); }
+
+function loadAll(){
+ db.collection('byo_settings').doc('main').onSnapshot(d=>{ if(d.exists){ settings=d.data(); feeDisplay.innerText='$'+settings.fee; ecoNumber.innerText=settings.ecoNum; adminEco.value=settings.ecoNum; adminFee.value=settings.fee; }});
+ db.collection('byo_posts').orderBy('date','desc').onSnapshot(s=>{ allPosts=[]; s.forEach(doc=>allPosts.push({id:doc.id,...doc.data()})); render(); renderAdmin(); });
+ db.collection('site_ads').where('active','==',true).onSnapshot(s=>{ siteAdsData=[]; s.forEach(d=>siteAdsData.push(d.data())); renderAds(); });
+ db.collection('byo_payments').orderBy('date','desc').limit(20).onSnapshot(s=>{ let h=''; let total=0; s.forEach(d=>{ let p=d.data(); total+=parseFloat(settings.fee||1); h+=`<div class="admin-card">${p.email} - ${p.code} - $${settings.fee}</div>`; }); payList.innerHTML=h; statCash.innerText=total; statPosts.innerText=allPosts.length; });
+}
 let pendingPost=null;
-function askPay(){ if(!checkAuth()) return; pendingPost={type:document.getElementById('type').value,title:document.getElementById('title').value,price:document.getElementById('price').value,phone:document.getElementById('phone').value,desc:document.getElementById('desc').value,img:imgData}; document.getElementById('payBox').classList.remove('hidden'); }
-function confirmPay(){ db.collection('byo_payments').add({email:currentUser.email,code:document.getElementById('ecoCode').value,date:Date.now()}); db.collection('byo_posts').add({...pendingPost,uid:currentUser.uid,email:currentUser.email,date:Date.now()}).then(()=>{ document.getElementById('payBox').classList.add('hidden'); document.getElementById('addBox').classList.add('hidden'); alert('Posted!'); });}
-function loadPosts(){ db.collection('byo_posts').orderBy('date','desc').onSnapshot(s=>{ let a=[]; s.forEach(d=>a.push(d.data())); window.allPosts=a; render(); }); }
+function askPay(){ 
+ if(!checkAuth()) return;
+ pendingPost={type:type.value,title:title.value,price:price.value,phone:phone.value,desc:desc.value,location:location.value,img:imgData,views:0,status:isAdmin?'approved':'pending'};
+ if(isAdmin){ confirmPay(); return; } // admin posts free
+ payBox.classList.remove('hidden');
+}
+function confirmPay(){
+ if(!isAdmin){ db.collection('byo_payments').add({email:currentUser.email,code:ecoCode.value,phone:ecoPhone.value,date:Date.now()}); }
+ db.collection('byo_posts').add({...pendingPost,uid:currentUser.uid,email:currentUser.email,date:Date.now(),expires:Date.now()+30*24*60*60*1000}).then(()=>{ payBox.classList.add('hidden'); addBox.classList.add('hidden'); alert(isAdmin?'Admin Ad Posted FREE!':'Posted! Awaiting admin approval'); title.value=''; price.value=''; desc.value=''; imgData=''; });
+}
 function switchTab(t,el){ curTab=t; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); el.classList.add('active'); render(); }
-function render(){ let f=window.allPosts.filter(p=>curTab==='all'||p.type===curTab); document.getElementById('list').innerHTML='<div class="grid">'+f.map(p=>`<div class="glass"><img class="list-img" src="${p.img||'https://via.placeholder.com/300'}"><h4>${p.title}</h4><p>${p.price}</p><a href="https://wa.me/263${(p.phone||'').replace(/^0/,'')}" style="display:block;background:#25D366;color:#fff;padding:9px;border-radius:10px;text-align:center;text-decoration:none;margin-top:6px">WhatsApp</a></div>`).join('')+'</div>'; }
-loadSettings(); loadPosts();
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js'); }
+function renderAds(){ siteAds.innerHTML=siteAdsData.map(a=>`<div class="site-ad" onclick="window.open('${a.link}','_blank')"><span>${a.title}</span><span style="background:#000;color:#fff;padding:4px 8px;border-radius:8px;font-size:.7rem">AD • Tap</span></div>`).join(''); }
+function render(){
+ let q=searchInput.value.toLowerCase(); let loc=locFilter.value;
+ let filtered=allPosts.filter(p=>{
+   if(!isAdmin && p.status!=='approved') return false;
+   if(curTab==='my') return currentUser && p.uid===currentUser.uid;
+   if(curTab!=='all' && curTab!=='my' && p.type!==curTab) return false;
+   if(loc && p.location!==loc) return false;
+   if(q && !( (p.title||'').toLowerCase().includes(q) || (p.desc||'').toLowerCase().includes(q) )) return false;
+   return true;
+ });
+ list.innerHTML='<div class="grid">'+filtered.map(p=>`<div class="glass"><img class="list-img" src="${p.img||'https://via.placeholder.com/300'}" onclick="incView('${p.id}')"><div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><h4 style="font-size:.9rem">${p.title} ${p.status==='approved'?'<span class="verified">✓</span>':''}</h4><span class="badge">${p.location||''}</span></div><p style="color:var(--gold);font-weight:bold">${p.price}</p><p style="font-size:.7rem;color:#aaa">${p.desc||''}</p><p style="font-size:.65rem;color:#666">👁️ ${p.views||0} views • ${p.email}</p><div style="display:flex;gap:5px;margin-top:6px"><a href="https://wa.me/263${(p.phone||'').replace(/^0/,'')}" style="flex:1;background:var(--green);color:#fff;padding:8px;border-radius:8px;text-align:center;text-decoration:none;font-size:.8rem">WhatsApp</a><a href="tel:${p.phone}" style="background:#222;color:#fff;padding:8px;border-radius:8px;text-align:center;text-decoration:none;font-size:.8rem">Call</a>${curTab==='my'?`<button onclick="deletePost('${p.id}')" style="background:#ff4444;color:#fff;border:0;padding:8px;border-radius:8px">Del</button>`:''}</div></div>`).join('')+'</div>';
+}
+function incView(id){ db.collection('byo_posts').doc(id).update({views: firebase.firestore.FieldValue.increment(1)}); }
+function deletePost(id){ if(confirm('Delete?')) db.collection('byo_posts').doc(id).delete(); }
+function renderAdmin(){
+ if(!isAdmin) return;
+ let pending=allPosts.filter(p=>p.status==='pending');
+ pendingList.innerHTML=pending.map(p=>`<div class="admin-card"><b>${p.title}</b> - ${p.price} - ${p.email}<br><button class="btn-sm" style="background:var(--green);color:#fff;border:0;border-radius:6px" onclick="approve('${p.id}')">Approve</button> <button class="btn-sm" style="background:#ff4444;color:#fff;border:0;border-radius:6px" onclick="reject('${p.id}')">Reject</button></div>`).join('') || 'No pending';
+}
+function approve(id){ db.collection('byo_posts').doc(id).update({status:'approved'}); }
+function reject(id){ db.collection('byo_posts').doc(id).delete(); }
+function saveSettings(){ db.collection('byo_settings').doc('main').set({fee:adminFee.value,ecoNum:adminEco.value}); alert('Saved'); }
+function createSiteAd(){ db.collection('site_ads').add({title:adTitle.value,img:adImg.value,link:adLink.value,active:true,date:Date.now()}); alert('Site Ad Created! Now visible on top'); adTitle.value=''; }
+loadAll();
 </script>
 </body>
   </html>
