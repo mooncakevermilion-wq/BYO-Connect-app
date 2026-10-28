@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BYO Connect - Bulawayo Marketplace</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00f2ea">
+<style>
+:root{--cyan:#00f2ea;--purple:#b026ff;--gold:#ffd700}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#0a0a0f;color:#fff}
+.header{padding:12px 15px;background:#000;position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222}
+.logo{font-weight:900;font-size:1.2rem} .logo span{color:var(--cyan)}
+.tabs{display:flex;gap:5px;overflow:auto;padding:10px;background:#111}
+.tab{padding:8px 14px;border-radius:20px;background:#222;border:1px solid #333;white-space:nowrap;cursor:pointer;font-size:.8rem}
+.tab.active{background:var(--cyan);color:#000;font-weight:bold}
+.glass{background:#15151d;border:1px solid #222;border-radius:15px;padding:15px;margin:10px}
+input,select,textarea{width:100%;padding:11px;margin:5px 0;background:#000;border:1px solid #333;border-radius:10px;color:#fff}
+.btn{width:100%;padding:12px;border:0;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:8px}
+.btn-main{background:linear-gradient(90deg,var(--purple),var(--cyan));color:#fff}
+.btn-eco{background:#1a9c2c;color:#fff}
+.hidden{display:none !important}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px} @media(max-width:600px){.grid{grid-template-columns:1fr}}
+img.list-img{width:100%;height:160px;object-fit:cover;border-radius:10px}
+#authBox,#payBox,#adminBox{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:1000;display:flex;justify-content:center;align-items:center;padding:20px;overflow:auto}
+</style>
+</head>
+<body>
+
+<div id="authBox" class="hidden"><div class="glass" style="width:100%;max-width:360px">
+<h2 style="text-align:center">BYO <span style="color:var(--cyan)">Connect</span></h2>
+<input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password">
+<button class="btn btn-main" onclick="register()">Create Account</button>
+<button class="btn" style="background:#222" onclick="login()">Login</button>
+<p id="authMsg" style="text-align:center;color:var(--gold);font-size:.8rem;margin-top:10px"></p>
+<button onclick="authBox.classList.add('hidden')" style="background:none;border:0;color:#666;width:100%;margin-top:10px">Close</button>
+</div></div>
+
+<div id="payBox" class="hidden"><div class="glass" style="width:100%;max-width:380px">
+<h3 style="color:var(--gold)">Pay to Post</h3>
+<p id="payInfo">Upload fee: $1 USD</p>
+<div style="background:#000;padding:12px;border-radius:10px;border:1px dashed var(--gold);margin:10px 0">
+<p style="font-size:.8rem">EcoCash to:</p><b id="ecoNumber" style="font-size:1.2rem;color:var(--gold)">0789706161</b>
+</div>
+<input id="ecoCode" placeholder="EcoCash Code e.g PP210...">
+<input id="ecoPhoneUsed" placeholder="Your EcoCash number">
+<button class="btn btn-eco" onclick="confirmPay()">Confirm Payment & Post</button>
+<button class="btn" style="background:#222" onclick="payBox.classList.add('hidden')">Cancel</button>
+</div></div>
+
+<div id="adminBox" class="hidden"><div class="glass" style="width:100%;max-width:400px">
+<h3>Admin Panel</h3><p style="font-size:.7rem;color:#888">?admin=byo2026</p>
+<input id="adminEcoNum" placeholder="EcoCash Number"><input id="adminFee" placeholder="Fee">
+<button class="btn btn-main" onclick="saveSettings()">Save</button>
+<button class="btn" style="background:#222" onclick="adminBox.classList.add('hidden')">Close</button>
+<div id="adminPayments" style="max-height:200px;overflow:auto;font-size:.75rem;margin-top:10px"></div>
+</div></div>
+
+<div class="header"><div class="logo">BYO <span>Connect</span></div><div><span id="userEmail" style="font-size:.6rem;color:#aaa">Guest</span> <button onclick="logout()" style="background:#222;color:#fff;border:0;padding:4px 8px;border-radius:8px">Logout</button></div></div>
+<div class="tabs">
+<div class="tab active" onclick="switchTab('all',this)">All</div>
+<div class="tab" onclick="switchTab('house',this)">Houses</div>
+<div class="tab" onclick="switchTab('car',this)">Cars</div>
+<div class="tab" onclick="switchTab('market',this)">Market</div>
+<div class="tab" onclick="switchTab('people',this)">People</div>
+</div>
+<div style="padding:10px"><button onclick="if(checkAuth())addBox.classList.remove('hidden')" class="btn btn-main">Post Ad - <span id="feeDisplay">$1</span></button></div>
+<div id="addBox" class="glass hidden">
+<select id="type"><option value="house">House</option><option value="car">Car</option><option value="market">Product</option><option value="people">Service</option></select>
+<input id="title" placeholder="Title"><input id="price" placeholder="Price"><input id="phone" placeholder="WhatsApp 077..."><textarea id="desc" placeholder="Location, details"></textarea>
+<input id="pic" type="file" accept="image/*"><img id="preview" style="width:100%;border-radius:10px;margin-top:10px;display:none">
+<button class="btn btn-main" onclick="askPay()">Continue to Pay</button>
+<button class="btn" style="background:#222" onclick="addBox.classList.add('hidden')">Cancel</button>
+</div>
+<div id="list"></div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+const apiKey = process.env.API_KEY || "";
+authDomain:"byo-connect-app.firebaseapp.com",
+projectId:"byo-connect-app",
+storageBucket:"byo-connect-app.firebasestorage.app",
+messagingSenderId:"967684674524",
+appId:"1:967684674524:web:3a1daab4680071c770b519"
+};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(), db=firebase.firestore();
+let currentUser=null, imgData='', curTab='all', settings={fee:'1',ecoNum:'0789706161'};
+window.allPosts=[];
+document.getElementById('pic').addEventListener('change', e=>{ let r=new FileReader(); r.onload=()=>{ imgData=r.result; document.getElementById('preview').src=imgData; document.getElementById('preview').style.display='block'; }; r.readAsDataURL(e.target.files[0]); });
+auth.onAuthStateChanged(u=>{ currentUser=u; document.getElementById('userEmail').innerText=u?u.email:'Guest'; if(u) loadPosts(); });
+if(window.location.search.includes('admin=byo2026')) setTimeout(()=>document.getElementById('adminBox').classList.remove('hidden'),500);
+function loadSettings(){ db.collection('byo_settings').doc('main').onSnapshot(d=>{ if(d.exists){ settings=d.data(); document.getElementById('feeDisplay').innerText=settings.fee; document.getElementById('ecoNumber').innerText=settings.ecoNum; } }); db.collection('byo_payments').orderBy('date','desc').limit(10).onSnapshot(s=>{ let h=''; s.forEach(d=>{let p=d.data(); h+=`<div>${p.email} - ${p.code}</div>`}); document.getElementById('adminPayments').innerHTML=h; });}
+function saveSettings(){ db.collection('byo_settings').doc('main').set({fee:document.getElementById('adminFee').value,ecoNum:document.getElementById('adminEcoNum').value}); alert('Saved');}
+function checkAuth(){ if(!currentUser){ document.getElementById('authBox').classList.remove('hidden'); return false; } return true; }
+function register(){ auth.createUserWithEmailAndPassword(document.getElementById('email').value,document.getElementById('password').value).then(()=>document.getElementById('authBox').classList.add('hidden')).catch(e=>document.getElementById('authMsg').innerText=e.message); }
+function login(){ auth.signInWithEmailAndPassword(document.getElementById('email').value,document.getElementById('password').value).then(()=>document.getElementById('authBox').classList.add('hidden')).catch(e=>document.getElementById('authMsg').innerText=e.message); }
+function logout(){ auth.signOut(); }
+let pendingPost=null;
+function askPay(){ if(!checkAuth()) return; pendingPost={type:document.getElementById('type').value,title:document.getElementById('title').value,price:document.getElementById('price').value,phone:document.getElementById('phone').value,desc:document.getElementById('desc').value,img:imgData}; document.getElementById('payBox').classList.remove('hidden'); }
+function confirmPay(){ db.collection('byo_payments').add({email:currentUser.email,code:document.getElementById('ecoCode').value,date:Date.now()}); db.collection('byo_posts').add({...pendingPost,uid:currentUser.uid,email:currentUser.email,date:Date.now()}).then(()=>{ document.getElementById('payBox').classList.add('hidden'); document.getElementById('addBox').classList.add('hidden'); alert('Posted!'); });}
+function loadPosts(){ db.collection('byo_posts').orderBy('date','desc').onSnapshot(s=>{ let a=[]; s.forEach(d=>a.push(d.data())); window.allPosts=a; render(); }); }
+function switchTab(t,el){ curTab=t; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); el.classList.add('active'); render(); }
+function render(){ let f=window.allPosts.filter(p=>curTab==='all'||p.type===curTab); document.getElementById('list').innerHTML='<div class="grid">'+f.map(p=>`<div class="glass"><img class="list-img" src="${p.img||'https://via.placeholder.com/300'}"><h4>${p.title}</h4><p>${p.price}</p><a href="https://wa.me/263${(p.phone||'').replace(/^0/,'')}" style="display:block;background:#25D366;color:#fff;padding:9px;border-radius:10px;text-align:center;text-decoration:none;margin-top:6px">WhatsApp</a></div>`).join('')+'</div>'; }
+loadSettings(); loadPosts();
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js'); }
+</script>
+</body>
+</html>
